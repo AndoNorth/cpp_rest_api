@@ -6,9 +6,7 @@
 #include <boost/asio.hpp>
 
 namespace asio = boost::asio;
-
-using namespace std::placeholders; // for template functions for body handlers
-
+                                  
 // http client for use later by async calls to resolve endpoints
 class HttpClient{
     public:
@@ -22,15 +20,17 @@ class HttpClient{
         _resolver.async_resolve
         (
             asio::ip::tcp::resolver::query(_host, "http"),
-            [this](const boost::system::error_code* ec,
-                         asio::ip::tcp::resolver::iterator it)
+            [this](const boost::system::error_code& ec,
+                        asio::ip::tcp::resolver::iterator it)
             {
                 if(ec)
                 {
-                    std::cout << "Error Resolving " << _host << ": " << ec->message(); // consider using cerr
+                    std::cout << "Error Resolving " << _host << ": " << ec.message(); // consider using cerr
+                    return;
                 }
                 // assume first endpoint is always available
-                std::cout << _host << ": resolved to" << it->endpoint();
+                std::cout << _host << ": resolved to "
+                          << it->endpoint() << std::endl;
 
                 do_connect(it->endpoint());
             }
@@ -134,7 +134,8 @@ class HttpClient{
         asio::async_read
         (
             _sock, _response, asio::transfer_exactly(len),
-            std::bind(&HttpClient::handle_http_get_body, this, _1, _2)
+            std::bind(&HttpClient::handle_http_get_body, this,
+            std::placeholders::_1, std::placeholders::_2)
         );
     }
     void do_receive_http_get_chunked_body()
@@ -142,7 +143,8 @@ class HttpClient{
         asio::async_read_until
         (
             _sock, _response, "\r\n\r\n",
-            std::bind(&HttpClient::handle_http_get_body, this, _1, _2)
+            std::bind(&HttpClient::handle_http_get_body, this,
+            std::placeholders::_1, std::placeholders::_2)
         );
     }
     void handle_http_get_body(const boost::system::error_code& ec,
@@ -176,7 +178,7 @@ int main()
     (
         new HttpClient
         (
-            io_service, resolver, "hostname", "path" // replace with respective URL and URI endpoint
+            io_service, resolver, "www.google.com", "/" // replace with respective URL and URI endpoint
         )
     );
     c->Start();
