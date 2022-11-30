@@ -61,7 +61,6 @@ class HttpClient{
                 std::cout << _host << ": connected to "
                           << _sock.remote_endpoint() << std::endl;
                 do_send_http_get();
-
             }
         );
     }
@@ -78,6 +77,9 @@ class HttpClient{
                     std::cout << "Error Sending GET request" << ec; // consider using cerr
                     return;
                 }
+
+                std::cout << _host << ": sent " << size << " bytes";
+                do_recv_http_get_header();
             }
         );
     }
@@ -178,7 +180,7 @@ int main()
     (
         new HttpClient
         (
-            io_service, resolver, "www.google.com", "/" // replace with respective URL and URI endpoint
+            io_service, resolver, "swapi.dev", "/api/people/1" // replace with respective URL and URI endpoint
         )
     );
     c->Start();
