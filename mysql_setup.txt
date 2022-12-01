@@ -1,0 +1,19 @@
+sql queries to setup db:
+create database cpp_rest_db;
+use cpp_rest_db;
+create table videos (
+id int not null,
+name varchar(128) not null,
+likes int not null,
+views int not null,
+primary key (id));
+
+sql queries to setup user:
+create user 'cpp_rest_user'@'localhost' identified by 'password123';
+grant all on cpp_rest_db.* to 'cpp_rest_user'@'localhost' identified by 'password123' with grant option;
+flush privileges;
+
+add some sample data:
+insert into videos (id, name, likes, views) values (0,"ando's funny video",10,121);
+insert into videos (id, name, likes, views) values (1,"how to make paper planes",1420,42000);
+insert into videos (id, name, likes, views) values (2,"awesome flip",23099,929299);
