@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     con = mysql_connection_setup(mysqlDetails);
     res = mysql_execute_query(con, "select * from videos");
 
-    std::cout << "Displaying database output: \n"
+    std::cout << "Displaying database output:"
               << std::endl;
 
     while ((row = mysql_fetch_row(res)) != NULL)
@@ -61,11 +61,12 @@ int main(int argc, char *argv[])
                   << row[1] << " | "
                   << row[2] << " | "
                   << row[3]
-                  << std::endl
                   << std::endl;
     }
     mysql_free_result(res);
     mysql_close(con);
+    std::cout << std::endl;
+    std::cout << std::endl;
 
     // create http server and initialize endpoints
     served::multiplexer multiplexer;

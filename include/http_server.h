@@ -7,7 +7,7 @@
 #include <served/multiplexer.hpp>
 #include <served/net/server.hpp>
 
-constexpr char kEndpoint[] = "/videos";
+constexpr char kEndpoint[] = "/videos/{id:\\d+}";
 constexpr char kIpAddress[] = "127.0.0.1";
 constexpr char kPort[] = "5000";
 constexpr int kThreads = 10;
@@ -23,13 +23,16 @@ public:
         {
             json::JSON request_body = json::JSON::Load(request.body());
             std::cout << "GET request recieved" << std::endl;
+            request.params["id"];
             /*
             json::JSON video_reponse = json::JSON::Load("get response");
             std::ostringstream stream;
             stream << video_reponse;
             response << stream.str();
             */
-            served::response::stock_reply(201, response);
+            bool get_successful = true;
+            get_successful ? served::response::stock_reply(201, response)
+                           : served::response::stock_reply(404, response);
         };
     }
 
@@ -71,8 +74,8 @@ public:
 
     void InitialiseEndpoints()
     {
-        multiplexer.handle(kEndpoint).put(HandlePut());
         multiplexer.handle(kEndpoint).get(HandleGet());
+        multiplexer.handle(kEndpoint).put(HandlePut());
         multiplexer.handle(kEndpoint).post(HandlePost());
         multiplexer.handle(kEndpoint).del(HandleDelete());
     }

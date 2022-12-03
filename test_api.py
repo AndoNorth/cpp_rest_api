@@ -9,12 +9,13 @@ data = [{"likes": 10, "name":"ando's funny video", "views" : 121},
 for i in range(len(data)):
     # response = requests.put(BASE + "video/"+str(i), data[i])
     x = i
-
-response = requests.get(BASE + "video")
+request_str=BASE + "videos/1"
+print(request_str)
+response = requests.get(request_str)
 print(response)
-response = requests.put(BASE + "video")
+response = requests.put(request_str)
 print(response)
-response = requests.post(BASE + "video")
+response = requests.post(request_str)
 print(response)
-response = requests.delete(BASE + "video")
+response = requests.delete(request_str)
 print(response)
